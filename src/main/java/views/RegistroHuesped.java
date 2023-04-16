@@ -33,6 +33,7 @@ import javax.swing.JSeparator;
 
 import dao.HuespedDao;
 import modelos.Huesped;
+import modelos.Reserva;
 
 @SuppressWarnings("serial")
 public class RegistroHuesped extends JFrame {
@@ -55,7 +56,7 @@ public class RegistroHuesped extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					RegistroHuesped frame = new RegistroHuesped();
+					RegistroHuesped frame = new RegistroHuesped(2L);
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -67,7 +68,7 @@ public class RegistroHuesped extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public RegistroHuesped() {
+	public RegistroHuesped(Long reservaId) {
 
 		setIconImage(
 				Toolkit.getDefaultToolkit().getImage(RegistroHuesped.class.getResource("/imagenes/lOGO-50PX.png")));
@@ -237,6 +238,9 @@ public class RegistroHuesped extends JFrame {
 		txtNreserva.setColumns(10);
 		txtNreserva.setBackground(Color.WHITE);
 		txtNreserva.setBorder(javax.swing.BorderFactory.createEmptyBorder());
+		txtNreserva.setText(reservaId.toString());
+		txtNreserva.setEnabled(false);
+		txtNreserva.setEditable(false);
 		contentPane.add(txtNreserva);
 
 		JSeparator separator_1_2 = new JSeparator();
@@ -297,6 +301,9 @@ public class RegistroHuesped extends JFrame {
 		            huesped.setFechaNacimiento(txtFechaN.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
 		            huesped.setNacionalidad((String) txtNacionalidad.getSelectedItem());
 		            huesped.setTelefono(txtTelefono.getText());
+		            Reserva reserva = new Reserva();
+		            reserva.setId(Long.parseLong(txtNreserva.getText()));
+		            huesped.setReserva(reserva);
 		            huespedDao.guardar(huesped);
 		            em.close();
 		            emf.close();

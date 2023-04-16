@@ -1,13 +1,22 @@
 package modelos;
 
 import java.sql.Date;
-
+import java.util.HashSet;
+import java.util.Set;
 import javax.persistence.*;
 
 @Entity
 @Table(name = "reserva")
 public class Reserva {
-    @Id
+    public Set<Huesped> getHuespedes() {
+		return huespedes;
+	}
+
+	public void setHuespedes(Set<Huesped> huespedes) {
+		this.huespedes = huespedes;
+	}
+
+	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
@@ -24,9 +33,8 @@ public class Reserva {
     @Column(name = "forma_pago")
     private String formaPago;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_huesped")
-    private Huesped huesped;
+  @OneToMany(mappedBy = "reserva", cascade = CascadeType.ALL)
+  private Set<Huesped> huespedes = new HashSet<>();
 
     public Long getId() {
         return id;
@@ -68,13 +76,6 @@ public class Reserva {
         this.formaPago = formaPago;
     }
 
-    public Huesped getHuesped() {
-        return huesped;
-    }
-
-    public void setHuesped(Huesped huesped) {
-        this.huesped = huesped;
-    }
 }
 
 

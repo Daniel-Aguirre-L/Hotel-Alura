@@ -4,6 +4,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.TypedQuery;
+
 import modelos.Reserva;
 
 public class ReservaDao {
@@ -14,11 +15,14 @@ public class ReservaDao {
         this.em = em;
     }
 
-    public void guardar(Reserva reserva) {
+    public Long guardar(Reserva reserva) {
         EntityTransaction tx = em.getTransaction();
         tx.begin();
         em.persist(reserva);
+        em.flush();
         tx.commit();
+        return reserva.getId();
+        
     }
 
     public void actualizar(Reserva reserva) {
@@ -35,5 +39,8 @@ public class ReservaDao {
         tx.commit();
     }
     
-   
+    public List<Reserva> obtenerTodos() {
+		TypedQuery<Reserva> query = em.createQuery("SELECT h FROM Reserva h", Reserva.class);
+		return query.getResultList();
+	}
 }

@@ -10,13 +10,13 @@ public class ResetTable {
 
     try (Connection conn = DriverManager.getConnection(url, user, password)) {
       // Borrar todos los registros de la tabla
-      String deleteSql = "DELETE FROM reserva";
+      String deleteSql = "DROP TABLE HUESPEDES";
       Statement stmt = conn.createStatement();
       stmt.executeUpdate(deleteSql);
 
-      // Reiniciar el valor del id
-      String resetSql = "ALTER TABLE reserva AUTO_INCREMENT = 1";
-      stmt.executeUpdate(resetSql);
+//      // Reiniciar el valor del id
+//      String resetSql = "ALTER TABLE reserva AUTO_INCREMENT = 1";
+//      stmt.executeUpdate(resetSql);
       
       System.out.println("La tabla ha sido reiniciada.");
     } catch (SQLException e) {

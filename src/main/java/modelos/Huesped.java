@@ -1,8 +1,6 @@
 package modelos;
 
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
 import javax.persistence.*;
 
 @Entity
@@ -27,9 +25,12 @@ public class Huesped {
 
     @Column(name = "telefono")
     private String telefono;
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_reserva")
+    private Reserva reserva;
 
-    @OneToMany(mappedBy = "huesped", cascade = CascadeType.ALL)
-    private Set<Reserva> reservas = new HashSet<>();
+
 
     public Long getId() {
         return id;
@@ -79,12 +80,14 @@ public class Huesped {
         this.telefono = telefono;
     }
 
-    public Set<Reserva> getReservas() {
-        return reservas;
-    }
+	public Reserva getReserva() {
+		return reserva;
+	}
 
-    public void setReservas(Set<Reserva> reservas) {
-        this.reservas = reservas;
-    }
+	public void setReserva(Reserva reserva) {
+		this.reserva = reserva;
+	}
+
+
 
 }

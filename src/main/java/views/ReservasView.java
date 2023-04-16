@@ -327,9 +327,10 @@ public class ReservasView extends JFrame {
 				EntityManagerFactory emf = Persistence.createEntityManagerFactory("hotel");
 				EntityManager em = emf.createEntityManager();
 				ReservaDao reservaDao = new ReservaDao(em);
-				reservaDao.guardar(reserva);
+				Long reservaId = reservaDao.guardar(reserva);
+				System.out.println(reservaId);
 				em.close();
-				RegistroHuesped registro = new RegistroHuesped();
+				RegistroHuesped registro = new RegistroHuesped(reservaId);
 				registro.setVisible(true);
 			}
 		});
@@ -361,4 +362,6 @@ public class ReservasView extends JFrame {
 		int y = evt.getYOnScreen();
 		this.setLocation(x - xMouse, y - yMouse);
 	}
+	
+	
 }
