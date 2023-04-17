@@ -98,7 +98,8 @@ public class Reserva {
     public void setFormaPago(String formaPago) {
         this.formaPago = formaPago;
     }
-
+    
+  
 }
 
 
