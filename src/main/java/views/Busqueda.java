@@ -29,7 +29,11 @@ import javax.swing.JSeparator;
 import javax.swing.ListSelectionModel;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionAdapter;
+import java.sql.Date;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 import dao.HuespedDao;
 import dao.ReservaDao;
@@ -53,7 +57,7 @@ public class Busqueda extends JFrame {
 	EntityManager em = emf.createEntityManager();
 	HuespedDao huespedDao = new HuespedDao(em);
 	ReservaDao reservaDao = new ReservaDao(em);
-	
+
 	/**
 	 * Launch the application.
 	 */
@@ -112,9 +116,9 @@ public class Busqueda extends JFrame {
 		modelo.addColumn("Fecha Check Out");
 		modelo.addColumn("Forma de Pago");
 		modelo.addColumn("Valor");
-		
+
 		cargarTablaReservas();
-		
+
 		JScrollPane scroll_table = new JScrollPane(tbReservas);
 		panel.addTab("Reservas", new ImageIcon(Busqueda.class.getResource("/imagenes/reservado.png")), scroll_table,
 				null);
@@ -131,9 +135,9 @@ public class Busqueda extends JFrame {
 		modeloHuesped.addColumn("Nacionalidad");
 		modeloHuesped.addColumn("Telefono");
 		modeloHuesped.addColumn("Número de Reserva");
-		
+
 		cargarTablaHuespedes();
-		
+
 		JScrollPane scroll_tableHuespedes = new JScrollPane(tbHuespedes);
 		panel.addTab("Huéspedes", new ImageIcon(Busqueda.class.getResource("/imagenes/pessoas.png")),
 				scroll_tableHuespedes, null);
@@ -239,35 +243,26 @@ public class Busqueda extends JFrame {
 		btnbuscar.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				
+
 				if (panel.getSelectedIndex() == 0) {
-					System.out.println("reserva");
 				} else if (panel.getSelectedIndex() == 1) {
-				
-					if (modeloHuesped.getRowCount() > 0 ) {
-						for (int i = modeloHuesped.getRowCount() -1; i > -1; i--) {
+
+					if (modeloHuesped.getRowCount() > 0) {
+						for (int i = modeloHuesped.getRowCount() - 1; i > -1; i--) {
 							modeloHuesped.removeRow(i);
-						
+
 						}
 					}
-					
+
 					var listaHuespedes = huespedDao.listarPorApellido(txtBuscar.getText());
-					listaHuespedes.forEach(huesped -> modeloHuesped.addRow(new Object[]{
-				            huesped.getId(),
-				            huesped.getNombre(),
-				            huesped.getApellido(),
-				            huesped.getFechaNacimiento(),
-				            huesped.getNacionalidad(),
-				            huesped.getTelefono(),
-//				            huesped.getReservas()
-				        }));
-				
+					listaHuespedes.forEach(huesped -> modeloHuesped
+							.addRow(new Object[] { huesped.getId(), huesped.getNombre(), huesped.getApellido(),
+									huesped.getFechaNacimiento(), huesped.getNacionalidad(), huesped.getTelefono(), }));
+
 				}
-				
+
 			}
 		});
-		
-		
 
 		btnbuscar.setLayout(null);
 		btnbuscar.setBackground(new Color(12, 138, 199));
@@ -288,6 +283,17 @@ public class Busqueda extends JFrame {
 		btnEditar.setBounds(635, 508, 122, 35);
 		btnEditar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
 		contentPane.add(btnEditar);
+		
+		btnEditar.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (panel.getSelectedIndex() == 1) {
+                    editarHuesped();
+              
+                }
+            }
+        });
+
 
 		JLabel lblEditar = new JLabel("EDITAR");
 		lblEditar.setHorizontalAlignment(SwingConstants.CENTER);
@@ -325,35 +331,41 @@ public class Busqueda extends JFrame {
 	}
 
 	public void cargarTablaHuespedes() {
-    
-	    List<Huesped> listaHuespedes = huespedDao.obtenerTodos();
-	    for (Huesped huesped : listaHuespedes) {
-	        modeloHuesped.addRow(new Object[]{
-	            huesped.getId(),
-	            huesped.getNombre(),
-	            huesped.getApellido(),
-	            huesped.getFechaNacimiento(),
-	            huesped.getNacionalidad(),
-	            huesped.getTelefono(),
-	            huesped.getReserva().getId()
 
-	        });
-	    }
+		List<Huesped> listaHuespedes = huespedDao.obtenerTodos();
+		for (Huesped huesped : listaHuespedes) {
+			modeloHuesped.addRow(new Object[] { huesped.getId(), huesped.getNombre(), huesped.getApellido(),
+					huesped.getFechaNacimiento(), huesped.getNacionalidad(), huesped.getTelefono(),
+					huesped.getReserva().getId()
+
+			});
+		}
 	}
-	
+
 	public void cargarTablaReservas() {
-	    
-	 
-	    List<Reserva> listaReservas = reservaDao.obtenerTodos();
-	    for (Reserva reserva : listaReservas) {
-	        modelo.addRow(new Object[]{
-	            reserva.getId(),
-	            reserva.getFechaEntrada(),
-	            reserva.getFechaSalida(),
-	            reserva.getFormaPago(),
-	            reserva.getValor()
-	        });
-	    }
+
+		List<Reserva> listaReservas = reservaDao.obtenerTodos();
+		for (Reserva reserva : listaReservas) {
+			modelo.addRow(new Object[] { reserva.getId(), reserva.getFechaEntrada(), reserva.getFechaSalida(),
+					reserva.getFormaPago(), reserva.getValor() });
+		}
 	}
 	
+	public void editarHuesped() {
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		  Long idHuesped = (Long) modeloHuesped.getValueAt(tbHuespedes.getSelectedRow(), 0);
+          String nombre = modeloHuesped.getValueAt(tbHuespedes.getSelectedRow(), 1).toString().trim();
+          String apellido = modeloHuesped.getValueAt(tbHuespedes.getSelectedRow(), 2).toString().trim();
+
+          String nacimiento = modeloHuesped.getValueAt(tbHuespedes.getSelectedRow(), 3).toString().trim();
+          LocalDate fechaNacimiento = LocalDate.parse(nacimiento, formatter);
+
+          String nacionalidad = modeloHuesped.getValueAt(tbHuespedes.getSelectedRow(), 4).toString().trim();
+          String telefono = modeloHuesped.getValueAt(tbHuespedes.getSelectedRow(), 5).toString().trim();
+          
+          
+          Huesped huesped = new Huesped(idHuesped,nombre,apellido,fechaNacimiento,nacionalidad,telefono);
+          huespedDao.actualizar(huesped);
+	}
+
 }

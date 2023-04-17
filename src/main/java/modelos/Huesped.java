@@ -30,9 +30,29 @@ public class Huesped {
     @JoinColumn(name = "id_reserva")
     private Reserva reserva;
 
+    public Huesped(Long id, String nombre, String apellido, LocalDate fechaNacimiento, String nacionalidad,
+			String telefono) {
+		super();
+		this.id = id;
+		this.nombre = nombre;
+		this.apellido = apellido;
+		this.fechaNacimiento = fechaNacimiento;
+		this.nacionalidad = nacionalidad;
+		this.telefono = telefono;
+		
+	}
+
+    public Huesped() {
+        this.id = null;
+        this.nombre = "";
+        this.apellido = "";
+        this.fechaNacimiento = LocalDate.now();
+        this.nacionalidad = "";
+        this.telefono = "";
+    }
 
 
-    public Long getId() {
+	public Long getId() {
         return id;
     }
 

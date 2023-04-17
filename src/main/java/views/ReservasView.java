@@ -328,7 +328,6 @@ public class ReservasView extends JFrame {
 				EntityManager em = emf.createEntityManager();
 				ReservaDao reservaDao = new ReservaDao(em);
 				Long reservaId = reservaDao.guardar(reserva);
-				System.out.println(reservaId);
 				em.close();
 				RegistroHuesped registro = new RegistroHuesped(reservaId);
 				registro.setVisible(true);

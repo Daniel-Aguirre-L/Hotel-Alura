@@ -21,18 +21,25 @@ public class HuespedDao {
 		tx.commit();
 	}
 
-	public void actualizar(Huesped huesped) {
-		EntityTransaction tx = em.getTransaction();
-		tx.begin();
-		em.merge(huesped);
-		tx.commit();
-	}
-
 	public void eliminar(Huesped huesped) {
 		EntityTransaction tx = em.getTransaction();
 		tx.begin();
 		em.remove(huesped);
 		tx.commit();
+	}
+	
+	public void actualizar(Huesped huesped) {
+		TypedQuery<Huesped> query = em.createQuery("UPDATE Huesped h SET h.nombre = :nombre, "
+				+ "h.apellido = :apellido, h.fecha_nacimiento = :fecha_nacimiento, h.nacionalidad = :nacionalidad"
+				+ ", h.telefono = :telefono WHERE h.id = :id ", Huesped.class);
+		query.setParameter("nombre", huesped.getNombre());
+		query.setParameter("apellido", huesped.getApellido());
+		query.setParameter("nacionalidad", huesped.getNacionalidad());
+		query.setParameter("telefono", huesped.getTelefono());
+		query.setParameter("fecha_nacimiento", huesped.getFechaNacimiento());
+		query.setParameter("id", huesped.getId());
+		query.executeUpdate();
+		em.close();
 	}
 
 	public List<Huesped> obtenerTodos() {
@@ -46,5 +53,7 @@ public class HuespedDao {
 		query.setParameter(1, busqueda);
 		return query.getResultList();
 	}
+	
+ 
 
 }
