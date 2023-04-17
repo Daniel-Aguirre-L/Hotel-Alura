@@ -1,6 +1,8 @@
 package modelos;
 
 import java.sql.Date;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.*;
@@ -8,7 +10,28 @@ import javax.persistence.*;
 @Entity
 @Table(name = "reserva")
 public class Reserva {
-    public Set<Huesped> getHuespedes() {
+	
+
+	public Reserva(Long id, LocalDate fechaEntrada, LocalDate fechaSalida, Double valor, String formaPago,
+			Set<Huesped> huespedes) {
+		super();
+		this.id = id;
+		this.fechaEntrada = fechaEntrada;
+		this.fechaSalida = fechaSalida;
+		this.valor = valor;
+		this.formaPago = formaPago;
+		this.huespedes = huespedes;
+	}
+	
+	
+
+	public Reserva() {
+		super();
+	}
+
+
+
+	public Set<Huesped> getHuespedes() {
 		return huespedes;
 	}
 
@@ -22,10 +45,10 @@ public class Reserva {
     private Long id;
 
     @Column(name = "fecha_entrada")
-    private Date fechaEntrada;
+    private LocalDate fechaEntrada;
 
     @Column(name = "fecha_salida")
-    private Date fechaSalida;
+    private LocalDate fechaSalida;
 
     @Column(name = "valor")
     private Double valor;
@@ -44,19 +67,19 @@ public class Reserva {
         this.id = id;
     }
 
-    public Date getFechaEntrada() {
+    public LocalDate getFechaEntrada() {
         return fechaEntrada;
     }
 
-    public void setFechaEntrada(Date fechaEntrada) {
+    public void setFechaEntrada(LocalDate fechaEntrada) {
         this.fechaEntrada = fechaEntrada;
     }
 
-    public Date getFechaSalida() {
+    public LocalDate getFechaSalida() {
         return fechaSalida;
     }
 
-    public void setFechaSalida(Date fechaSalida) {
+    public void setFechaSalida(LocalDate fechaSalida) {
         this.fechaSalida = fechaSalida;
     }
 

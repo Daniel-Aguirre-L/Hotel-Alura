@@ -1,6 +1,7 @@
 package views;
 
 import java.awt.EventQueue;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -135,7 +136,7 @@ public class Busqueda extends JFrame {
 		modeloHuesped.addColumn("Nacionalidad");
 		modeloHuesped.addColumn("Telefono");
 		modeloHuesped.addColumn("Número de Reserva");
-
+		
 		cargarTablaHuespedes();
 
 		JScrollPane scroll_tableHuespedes = new JScrollPane(tbHuespedes);
@@ -283,17 +284,18 @@ public class Busqueda extends JFrame {
 		btnEditar.setBounds(635, 508, 122, 35);
 		btnEditar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
 		contentPane.add(btnEditar);
-		
-		btnEditar.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                if (panel.getSelectedIndex() == 1) {
-                    editarHuesped();
-              
-                }
-            }
-        });
 
+		btnEditar.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (panel.getSelectedIndex() == 1) {
+					editarHuesped();
+
+				} else if (panel.getSelectedIndex() == 0) {
+					editarReserva();
+				}
+			}
+		});
 
 		JLabel lblEditar = new JLabel("EDITAR");
 		lblEditar.setHorizontalAlignment(SwingConstants.CENTER);
@@ -308,6 +310,16 @@ public class Busqueda extends JFrame {
 		btnEliminar.setBounds(767, 508, 122, 35);
 		btnEliminar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
 		contentPane.add(btnEliminar);
+
+		btnEliminar.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (panel.getSelectedIndex() == 1) {
+					eliminarHuesped();
+
+				}
+			}
+		});
 
 		JLabel lblEliminar = new JLabel("ELIMINAR");
 		lblEliminar.setHorizontalAlignment(SwingConstants.CENTER);
@@ -350,22 +362,47 @@ public class Busqueda extends JFrame {
 					reserva.getFormaPago(), reserva.getValor() });
 		}
 	}
-	
+
 	public void editarHuesped() {
-			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-		  Long idHuesped = (Long) modeloHuesped.getValueAt(tbHuespedes.getSelectedRow(), 0);
-          String nombre = modeloHuesped.getValueAt(tbHuespedes.getSelectedRow(), 1).toString().trim();
-          String apellido = modeloHuesped.getValueAt(tbHuespedes.getSelectedRow(), 2).toString().trim();
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		Long idHuesped = (Long) modeloHuesped.getValueAt(tbHuespedes.getSelectedRow(), 0);
+		String nombre = modeloHuesped.getValueAt(tbHuespedes.getSelectedRow(), 1).toString().trim();
+		String apellido = modeloHuesped.getValueAt(tbHuespedes.getSelectedRow(), 2).toString().trim();
 
-          String nacimiento = modeloHuesped.getValueAt(tbHuespedes.getSelectedRow(), 3).toString().trim();
-          LocalDate fechaNacimiento = LocalDate.parse(nacimiento, formatter);
+		String nacimiento = modeloHuesped.getValueAt(tbHuespedes.getSelectedRow(), 3).toString().trim();
+		LocalDate fechaNacimiento = LocalDate.parse(nacimiento, formatter);
 
-          String nacionalidad = modeloHuesped.getValueAt(tbHuespedes.getSelectedRow(), 4).toString().trim();
-          String telefono = modeloHuesped.getValueAt(tbHuespedes.getSelectedRow(), 5).toString().trim();
-          
-          
-          Huesped huesped = new Huesped(idHuesped,nombre,apellido,fechaNacimiento,nacionalidad,telefono);
-          huespedDao.actualizar(huesped);
+		String nacionalidad = modeloHuesped.getValueAt(tbHuespedes.getSelectedRow(), 4).toString().trim();
+		String telefono = modeloHuesped.getValueAt(tbHuespedes.getSelectedRow(), 5).toString().trim();
+
+		Huesped huesped = new Huesped(idHuesped, nombre, apellido, fechaNacimiento, nacionalidad, telefono);
+		huespedDao.actualizarHuesped(huesped);
+	}
+	
+	public void editarReserva() {
+	    Long idReserva = (Long) modelo.getValueAt(tbReservas.getSelectedRow(), 0);
+	    String fechaEntradaStr = modelo.getValueAt(tbReservas.getSelectedRow(), 1).toString().trim();
+	    String fechaSalidaStr = modelo.getValueAt(tbReservas.getSelectedRow(), 2).toString().trim();
+	    String formaPago = modelo.getValueAt(tbReservas.getSelectedRow(), 3).toString().trim();
+	    Double valor = Double.parseDouble(modelo.getValueAt(tbReservas.getSelectedRow(), 4).toString().trim());
+
+	    LocalDate fechaEntrada = LocalDate.parse(fechaEntradaStr);
+	    LocalDate fechaSalida = LocalDate.parse(fechaSalidaStr);
+
+	    Reserva reserva = new Reserva(idReserva, fechaEntrada, fechaSalida, valor, formaPago, null);
+	    reservaDao.actualizarReserva(reserva);
+	}
+	
+	
+
+	public void eliminarHuesped() {
+		int filaSeleccionada = tbHuespedes.getSelectedRow();
+		if (filaSeleccionada == -1) {
+			return;
+		}
+		Long idHuesped = (Long) modeloHuesped.getValueAt(filaSeleccionada, 0);
+		huespedDao.eliminarHuesped(idHuesped);
+		modeloHuesped.removeRow(filaSeleccionada);
 	}
 
 }

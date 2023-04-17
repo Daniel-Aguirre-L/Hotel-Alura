@@ -18,6 +18,8 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.swing.DefaultComboBoxModel;
 import java.text.Format;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
@@ -315,25 +317,24 @@ public class ReservasView extends JFrame {
 		btnsiguiente.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				Date fechaEntrada = ReservasView.txtFechaEntrada.getDate();
-				Date fechaSalida = ReservasView.txtFechaSalida.getDate();
-				String formaPago = (String) ReservasView.txtFormaPago.getSelectedItem();
-				Double valor = Double.parseDouble(ReservasView.txtValor.getText());
- 				Reserva reserva = new Reserva();
-				reserva.setFechaEntrada(new java.sql.Date(fechaEntrada.getTime()));
-				reserva.setFechaSalida(new java.sql.Date(fechaSalida.getTime()));
-				reserva.setFormaPago(formaPago);
-				reserva.setValor(valor);
-				EntityManagerFactory emf = Persistence.createEntityManagerFactory("hotel");
-				EntityManager em = emf.createEntityManager();
-				ReservaDao reservaDao = new ReservaDao(em);
-				Long reservaId = reservaDao.guardar(reserva);
-				em.close();
-				RegistroHuesped registro = new RegistroHuesped(reservaId);
-				registro.setVisible(true);
+			    String formaPago = (String) ReservasView.txtFormaPago.getSelectedItem();
+			    Double valor = Double.parseDouble(ReservasView.txtValor.getText());
+			    Reserva reserva = new Reserva();
+			    LocalDate fechaEntrada = ReservasView.txtFechaEntrada.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+			    LocalDate fechaSalida = ReservasView.txtFechaSalida.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+			    reserva.setFormaPago(formaPago);
+			    reserva.setValor(valor);
+			    reserva.setFechaEntrada(fechaEntrada); // Asignar fecha de entrada
+			    reserva.setFechaSalida(fechaSalida); // Asignar fecha de salida
+			    EntityManagerFactory emf = Persistence.createEntityManagerFactory("hotel");
+			    EntityManager em = emf.createEntityManager();
+			    ReservaDao reservaDao = new ReservaDao(em);
+			    Long reservaId = reservaDao.guardar(reserva);
+			    em.close();
+			    RegistroHuesped registro = new RegistroHuesped(reservaId);
+			    registro.setVisible(true);
 			}
 		});
-
 		btnsiguiente.setLayout(null);
 		btnsiguiente.setBackground(SystemColor.textHighlight);
 		btnsiguiente.setBounds(238, 493, 122, 35);
