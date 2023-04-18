@@ -32,7 +32,8 @@ Registrar, editar y eliminar datos de los huéspedes;
 
 ### Ejecución
 
-![](https://github.com/Agathion-JD/Assets/blob/26c3c5d5ebb6fd28e17bb2447548455ca65f2596/Menu.PNG)  ![](https://github.com/Agathion-JD/Assets/blob/26c3c5d5ebb6fd28e17bb2447548455ca65f2596/Menu2.png)  ![](https://github.com/Agathion-JD/Assets/blob/26c3c5d5ebb6fd28e17bb2447548455ca65f2596/Menu3.PNG)  ![](https://github.com/Agathion-JD/Assets/blob/26c3c5d5ebb6fd28e17bb2447548455ca65f2596/Menu4.PNG)  ![](https://github.com/Agathion-JD/Assets/blob/26c3c5d5ebb6fd28e17bb2447548455ca65f2596/Menu5.PNG) ![](https://github.com/Agathion-JD/Assets/blob/26c3c5d5ebb6fd28e17bb2447548455ca65f2596/Menu6.PNG) ![](https://github.com/Agathion-JD/Assets/blob/26c3c5d5ebb6fd28e17bb2447548455ca65f2596/Menu7.PNG)
+![](https://media.giphy.com/media/AQbvuYsssHsFDqJsZI/giphy.gif)
+![](https://media.giphy.com/media/uiP9WaFhjSJ1KMtMpY/giphy.gif)
 
 
 
