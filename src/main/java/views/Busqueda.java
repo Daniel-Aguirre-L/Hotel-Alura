@@ -12,6 +12,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.swing.ImageIcon;
 import java.awt.Color;
+import java.awt.EventQueue;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import java.awt.Font;
@@ -26,7 +27,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-
 import dao.HuespedDao;
 import dao.ReservaDao;
 import modelos.Huesped;
@@ -45,26 +45,26 @@ public class Busqueda extends JFrame {
 	private JLabel labelExit;
 	int xMouse, yMouse;
 
-	EntityManagerFactory emf = Persistence.createEntityManagerFactory("hotel");
-	EntityManager em = emf.createEntityManager();
-	HuespedDao huespedDao = new HuespedDao(em);
-	ReservaDao reservaDao = new ReservaDao(em);
+	static EntityManagerFactory emf = Persistence.createEntityManagerFactory("hotel");
+	static EntityManager em = emf.createEntityManager();
+	private static HuespedDao huespedDao = new HuespedDao(em);
+	private static ReservaDao reservaDao = new ReservaDao(em);
 
 	/**
 	 * Launch the application.
 	 */
-//	public static void main(String[] args) {
-//		EventQueue.invokeLater(new Runnable() {
-//			public void run() {
-//				try {
-//					Busqueda frame = new Busqueda();
-//					frame.setVisible(true);
-//				} catch (Exception e) {
-//					e.printStackTrace();
-//				}
-//			}
-//		});
-//	}
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					Busqueda frame = new Busqueda();
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
 
 	/**
 	 * Create the frame.
@@ -81,9 +81,16 @@ public class Busqueda extends JFrame {
 		setLocationRelativeTo(null);
 		setUndecorated(true);
 
-		txtBuscar = new JTextField();
-		txtBuscar.setForeground(new Color(158, 152, 157));
-		txtBuscar.setText("Ingrese un apellido o id");
+		txtBuscar = new JTextField("Ingrese un apellido o id");
+		txtBuscar.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				txtBuscar.setText("");
+				txtBuscar.setForeground(new Color(0, 0,0));
+			}
+		});
+
+		txtBuscar.setForeground(new Color(108, 108, 108));
 		txtBuscar.setBounds(545, 127, 193, 31);
 		txtBuscar.setBorder(javax.swing.BorderFactory.createEmptyBorder());
 		contentPane.add(txtBuscar);
@@ -352,9 +359,8 @@ public class Busqueda extends JFrame {
 		for (Huesped huesped : listaHuespedes) {
 			modeloHuesped.addRow(new Object[] { huesped.getId(), huesped.getNombre(), huesped.getApellido(),
 					huesped.getFechaNacimiento(), huesped.getNacionalidad(), huesped.getTelefono(),
-					huesped.getReserva().getId()
-
-			});
+					huesped.getReserva().getId() });
+			System.out.println(huesped.getApellido());
 		}
 	}
 
@@ -382,6 +388,7 @@ public class Busqueda extends JFrame {
 
 		Huesped huesped = new Huesped(idHuesped, nombre, apellido, fechaNacimiento, nacionalidad, telefono);
 		huespedDao.actualizarHuesped(huesped);
+		modeloHuesped.fireTableDataChanged();
 	}
 
 	public void editarReserva() {
@@ -396,6 +403,7 @@ public class Busqueda extends JFrame {
 
 		Reserva reserva = new Reserva(idReserva, fechaEntrada, fechaSalida, valor, formaPago, null);
 		reservaDao.actualizarReserva(reserva);
+		modeloReserva.fireTableDataChanged();
 	}
 
 	public void eliminarHuesped() {
@@ -424,7 +432,7 @@ public class Busqueda extends JFrame {
 				tableModel.removeRow(i);
 			}
 		}
-		table.repaint();
+		table.setModel(tableModel);
 	}
 
 }
