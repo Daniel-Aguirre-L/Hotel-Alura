@@ -1,30 +1,21 @@
 package views;
 
-import java.awt.EventQueue;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableColumn;
 import javax.swing.JTable;
 import javax.swing.JTextField;
-import javax.swing.JButton;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.swing.ImageIcon;
 import java.awt.Color;
-import java.awt.Component;
-import java.awt.SystemColor;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-
 import java.awt.Font;
-import java.awt.event.ActionListener;
 import java.util.List;
-import java.awt.event.ActionEvent;
 import javax.swing.JTabbedPane;
 import java.awt.Toolkit;
 import javax.swing.SwingConstants;
@@ -32,9 +23,7 @@ import javax.swing.JSeparator;
 import javax.swing.ListSelectionModel;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionAdapter;
-import java.sql.Date;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
@@ -64,18 +53,18 @@ public class Busqueda extends JFrame {
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					Busqueda frame = new Busqueda();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+//	public static void main(String[] args) {
+//		EventQueue.invokeLater(new Runnable() {
+//			public void run() {
+//				try {
+//					Busqueda frame = new Busqueda();
+//					frame.setVisible(true);
+//				} catch (Exception e) {
+//					e.printStackTrace();
+//				}
+//			}
+//		});
+//	}
 
 	/**
 	 * Create the frame.
@@ -93,7 +82,9 @@ public class Busqueda extends JFrame {
 		setUndecorated(true);
 
 		txtBuscar = new JTextField();
-		txtBuscar.setBounds(536, 127, 193, 31);
+		txtBuscar.setForeground(new Color(158, 152, 157));
+		txtBuscar.setText("Ingrese un apellido o id");
+		txtBuscar.setBounds(545, 127, 193, 31);
 		txtBuscar.setBorder(javax.swing.BorderFactory.createEmptyBorder());
 		contentPane.add(txtBuscar);
 		txtBuscar.setColumns(10);
@@ -248,7 +239,7 @@ public class Busqueda extends JFrame {
 			public void mouseClicked(MouseEvent e) {
 
 				if (panel.getSelectedIndex() == 1) {
-					limpiarTabla(modeloHuesped,tbHuespedes);
+					limpiarTabla(modeloHuesped, tbHuespedes);
 					var listaHuespedes = huespedDao.listarPorApellido(txtBuscar.getText());
 					listaHuespedes.forEach(huesped -> modeloHuesped.addRow(new Object[] { huesped.getId(),
 							huesped.getNombre(), huesped.getApellido(), huesped.getFechaNacimiento(),
@@ -293,12 +284,12 @@ public class Busqueda extends JFrame {
 			public void mouseClicked(MouseEvent e) {
 				if (panel.getSelectedIndex() == 1) {
 					editarHuesped();
-					limpiarTabla(modeloHuesped,tbHuespedes);
+					limpiarTabla(modeloHuesped, tbHuespedes);
 					cargarTablaHuespedes();
 
 				} else if (panel.getSelectedIndex() == 0) {
 					editarReserva();
-					limpiarTabla(modeloReserva,tbReservas);
+					limpiarTabla(modeloReserva, tbReservas);
 					cargarTablaReservas();
 				}
 			}
@@ -323,12 +314,12 @@ public class Busqueda extends JFrame {
 			public void mouseClicked(MouseEvent e) {
 				if (panel.getSelectedIndex() == 1) {
 					eliminarHuesped();
-					limpiarTabla(modeloHuesped,tbHuespedes);
+					limpiarTabla(modeloHuesped, tbHuespedes);
 					cargarTablaHuespedes();
 
 				} else if (panel.getSelectedIndex() == 0) {
 					eliminarReserva();
-					limpiarTabla(modeloReserva,tbReservas);
+					limpiarTabla(modeloReserva, tbReservas);
 					cargarTablaReservas();
 				}
 			}
@@ -356,7 +347,6 @@ public class Busqueda extends JFrame {
 	}
 
 	public void cargarTablaHuespedes() {
-		HuespedDao huespuedDao = new HuespedDao(em);
 
 		List<Huesped> listaHuespedes = huespedDao.obtenerTodos();
 		for (Huesped huesped : listaHuespedes) {

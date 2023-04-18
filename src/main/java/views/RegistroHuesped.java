@@ -1,6 +1,5 @@
 package views;
 
-import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
@@ -16,21 +15,17 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import java.awt.Font;
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import java.awt.SystemColor;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.text.Format;
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.awt.event.ActionEvent;
 import java.awt.Toolkit;
 import javax.swing.SwingConstants;
 import javax.swing.JSeparator;
-
-
+import java.util.Date;
 import dao.HuespedDao;
 import modelos.Huesped;
 import modelos.Reserva;
@@ -52,18 +47,18 @@ public class RegistroHuesped extends JFrame {
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					RegistroHuesped frame = new RegistroHuesped(2L);
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+//	public static void main(String[] args) {
+//		EventQueue.invokeLater(new Runnable() {
+//			public void run() {
+//				try {
+//					RegistroHuesped frame = new RegistroHuesped(2L);
+//					frame.setVisible(true);
+//				} catch (Exception e) {
+//					e.printStackTrace();
+//				}
+//			}
+//		});
+//	}
 
 	/**
 	 * Create the frame.
@@ -284,35 +279,40 @@ public class RegistroHuesped extends JFrame {
 		btnguardar.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-		        String nombreForm = txtNombre.getText();
-		        String apellidoForm = txtApellido.getText();
-		        LocalDate fechaNacimientoForm = txtFechaN.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-		        String nacionalidadForm = txtNacionalidad.getSelectedItem().toString();
-		        String telefonoForm = txtTelefono.getText();
-		        if (nombreForm != null && !nombreForm.isEmpty() && apellidoForm != null && !apellidoForm.isEmpty()
-		                && fechaNacimientoForm != null && nacionalidadForm != null && telefonoForm != null) {
-		            // El formulario está completo
-		            EntityManagerFactory emf = Persistence.createEntityManagerFactory("hotel");
-		            EntityManager em = emf.createEntityManager();
-		            HuespedDao huespedDao = new HuespedDao(em);
-		            Huesped huesped = new Huesped();
-		            huesped.setNombre(txtNombre.getText());
-		            huesped.setApellido(txtApellido.getText());
-		            huesped.setFechaNacimiento(txtFechaN.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
-		            huesped.setNacionalidad((String) txtNacionalidad.getSelectedItem());
-		            huesped.setTelefono(txtTelefono.getText());
-		            Reserva reserva = new Reserva();
-		            reserva.setId(Long.parseLong(txtNreserva.getText()));
-		            huesped.setReserva(reserva);
-		            huespedDao.guardar(huesped);
-		            em.close();
-		            emf.close();
-		            Exito exito = new Exito();
-					exito.setVisible(true);
-		        } else {
-		            JOptionPane.showMessageDialog(null, "Debes llenar todos los campos del formulario!");
-		        }
-		    }
+			    String nombreForm = txtNombre.getText();
+			    String apellidoForm = txtApellido.getText();
+			    LocalDate fechaNacimientoForm = null;
+			    Date fechaNacimiento = txtFechaN.getDate();
+			    if (fechaNacimiento != null) {
+			        fechaNacimientoForm = fechaNacimiento.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+			    }
+			    String nacionalidadForm = txtNacionalidad.getSelectedItem().toString();
+			    String telefonoForm = txtTelefono.getText();
+			    if (nombreForm != null && !nombreForm.isEmpty() && apellidoForm != null && !apellidoForm.isEmpty()
+			            && fechaNacimientoForm != null && nacionalidadForm != null && telefonoForm != null) {
+
+			        EntityManagerFactory emf = Persistence.createEntityManagerFactory("hotel");
+			        EntityManager em = emf.createEntityManager();
+			        HuespedDao huespedDao = new HuespedDao(em);
+			        Huesped huesped = new Huesped();
+			        huesped.setNombre(txtNombre.getText());
+			        huesped.setApellido(txtApellido.getText());
+			        huesped.setFechaNacimiento(fechaNacimientoForm);
+			        huesped.setNacionalidad((String) txtNacionalidad.getSelectedItem());
+			        huesped.setTelefono(txtTelefono.getText());
+			        Reserva reserva = new Reserva();
+			        reserva.setId(Long.parseLong(txtNreserva.getText()));
+			        huesped.setReserva(reserva);
+			        huespedDao.guardar(huesped);
+			        em.close();
+			        emf.close();
+			        Exito exito = new Exito();
+			        exito.setVisible(true);
+			        RegistroHuesped.this.dispose();
+			    } else {
+			        JOptionPane.showMessageDialog(null, "Debes llenar todos los campos del formulario!");
+			    }
+			}
 		});
 		btnguardar.setLayout(null);
 		btnguardar.setBackground(new Color(12, 138, 199));

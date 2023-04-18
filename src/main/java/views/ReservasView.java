@@ -1,6 +1,5 @@
 package views;
 
-import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
@@ -17,8 +16,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.swing.DefaultComboBoxModel;
-import java.text.Format;
-import java.time.LocalDate;
 import java.time.ZoneId;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -30,9 +27,7 @@ import javax.swing.JSeparator;
 import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
 import java.util.Date;
-
 import modelos.Reserva;
-import util.HotelUtil;
 import dao.ReservaDao;
 
 @SuppressWarnings("serial")
@@ -49,19 +44,19 @@ public class ReservasView extends JFrame {
 
 	/**
 	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					ReservasView frame = new ReservasView();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+//	 */
+//	public static void main(String[] args) {
+//		EventQueue.invokeLater(new Runnable() {
+//			public void run() {
+//				try {
+//					ReservasView frame = new ReservasView();
+//					frame.setVisible(true);
+//				} catch (Exception e) {
+//					e.printStackTrace();
+//				}
+//			}
+//		});
+//	}
 
 	/**
 	 * Create the frame.
@@ -279,10 +274,10 @@ public class ReservasView extends JFrame {
 				int valorReservaDia;
 				var fechaEntrada = txtFechaEntrada.getDate();
 				var fechaSalida = txtFechaSalida.getDate();
-				if (fechaEntrada!=null && fechaSalida!=null) {
-				long diasEstancia = (fechaSalida.getTime()-fechaEntrada.getTime())/(1000*60*60*24);
-				long valorTotal = diasEstancia * 20000;
-				txtValor.setText(String.valueOf(valorTotal));
+				if (fechaEntrada != null && fechaSalida != null) {
+					long diasEstancia = (fechaSalida.getTime() - fechaEntrada.getTime()) / (1000 * 60 * 60 * 24);
+					long valorTotal = diasEstancia * 20000;
+					txtValor.setText(String.valueOf(valorTotal));
 				}
 			}
 		});
@@ -301,7 +296,6 @@ public class ReservasView extends JFrame {
 		txtValor.setBorder(javax.swing.BorderFactory.createEmptyBorder());
 		panel.add(txtValor);
 		txtValor.setColumns(10);
-		
 
 		txtFormaPago = new JComboBox();
 		txtFormaPago.setBounds(68, 417, 289, 38);
@@ -317,24 +311,41 @@ public class ReservasView extends JFrame {
 		btnsiguiente.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
+
 			    String formaPago = (String) ReservasView.txtFormaPago.getSelectedItem();
 			    Double valor = Double.parseDouble(ReservasView.txtValor.getText());
+			    Date fechaEntrada = ReservasView.txtFechaEntrada.getDate();
+			    Date fechaSalida = ReservasView.txtFechaSalida.getDate();
+			    if (fechaEntrada == null || fechaSalida == null) {
+			        JOptionPane.showMessageDialog(null, "Por favor seleccione fechas válidas");
+			        return;
+			    }
+			    if (fechaEntrada.toInstant().atZone(ZoneId.systemDefault()).toLocalDate().isAfter(fechaSalida.toInstant().atZone(ZoneId.systemDefault()).toLocalDate())) {
+			        JOptionPane.showMessageDialog(null, "La fecha de entrada no puede ser posterior a la fecha de salida");
+			        return;
+			    }
+			    if (formaPago == null || formaPago.isEmpty()) {
+			        JOptionPane.showMessageDialog(null, "Por favor seleccione una forma de pago");
+			        return;
+			    }
+
 			    Reserva reserva = new Reserva();
-			    LocalDate fechaEntrada = ReservasView.txtFechaEntrada.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-			    LocalDate fechaSalida = ReservasView.txtFechaSalida.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 			    reserva.setFormaPago(formaPago);
 			    reserva.setValor(valor);
-			    reserva.setFechaEntrada(fechaEntrada); // Asignar fecha de entrada
-			    reserva.setFechaSalida(fechaSalida); // Asignar fecha de salida
+			    reserva.setFechaEntrada(fechaEntrada.toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+			    reserva.setFechaSalida(fechaSalida.toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
 			    EntityManagerFactory emf = Persistence.createEntityManagerFactory("hotel");
 			    EntityManager em = emf.createEntityManager();
 			    ReservaDao reservaDao = new ReservaDao(em);
 			    Long reservaId = reservaDao.guardar(reserva);
 			    em.close();
+
 			    RegistroHuesped registro = new RegistroHuesped(reservaId);
 			    registro.setVisible(true);
+			    ReservasView.this.dispose();
 			}
 		});
+
 		btnsiguiente.setLayout(null);
 		btnsiguiente.setBackground(SystemColor.textHighlight);
 		btnsiguiente.setBounds(238, 493, 122, 35);
@@ -362,6 +373,5 @@ public class ReservasView extends JFrame {
 		int y = evt.getYOnScreen();
 		this.setLocation(x - xMouse, y - yMouse);
 	}
-	
-	
+
 }

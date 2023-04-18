@@ -1,8 +1,6 @@
 package modelos;
 
-import java.sql.Date;
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.*;
